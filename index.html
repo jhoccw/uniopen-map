@@ -489,75 +489,7 @@
             border-top: 1px solid rgba(155, 123, 255, 0.1);
         }
 
-        .custom-confirm {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            z-index: 1001;
-            transition: transform 0.3s ease;
-            border: 2px solid #9b7bff;
-            min-width: 300px;
-        }
-
-        .custom-confirm.show {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .confirm-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .confirm-message {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .confirm-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .confirm-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .confirm-btn.yes {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        .confirm-btn.yes:hover {
-            background: #ff5252;
-            transform: translateY(-1px);
-        }
-
-        .confirm-btn.no {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .confirm-btn.no:hover {
-            background: #d0d0d0;
-            transform: translateY(-1px);
-        }
+        @media (max-width: 768px) {
             .monopoly-board {
                 grid-template-columns: repeat(4, 1fr);
                 gap: 8px;
@@ -693,7 +625,7 @@
                     </div>
                 </div>
 
-                <button class="reset-btn" onclick="showResetConfirm()">🔄 重置進度</button>
+                <button class="reset-btn" onclick="doReset()">🔄 重置進度</button>
             </div>
         </div>
 
@@ -723,15 +655,6 @@
         <div class="achievement-desc" id="achievementDesc">您已成功踩點新店家！</div>
     </div>
 
-    <div class="custom-confirm" id="customConfirm">
-        <div class="confirm-title">確認重置</div>
-        <div class="confirm-message">確定要重置所有踩點進度嗎？<br>此操作無法復原。</div>
-        <div class="confirm-buttons">
-            <button class="confirm-btn yes" onclick="confirmReset()">確定</button>
-            <button class="confirm-btn no" onclick="cancelReset()">取消</button>
-        </div>
-    </div>
-
     <script>
         // 測試 JavaScript 是否正常載入
         console.log('JavaScript 開始載入...');
@@ -758,98 +681,25 @@
         
         // 重置功能 - 最簡單直接的方式
         function doReset() {
-            console.log('=== 開始執行重置功能 ===');
-            
+            console.log('執行重置功能');
             // 清空記錄
             visitedStores = new Set();
-            console.log('visitedStores 已清空，大小:', visitedStores.size);
             
-            // 移除所有標記 - 使用更詳細的選擇器
+            // 移除所有標記
             var tiles = document.querySelectorAll('.store-tile');
-            console.log('找到店家格子數量:', tiles.length);
-            
             for (var i = 0; i < tiles.length; i++) {
-                var tile = tiles[i];
-                var hadVisited = tile.classList.contains('visited');
-                
-                if (hadVisited) {
-                    console.log('移除第', i, '個格子的visited狀態:', stores[i].name);
-                }
-                
-                // 移除visited class
-                tile.classList.remove('visited');
-                
-                // 移除徽章
-                var badges = tile.querySelectorAll('.visited-badge');
-                console.log('第', i, '個格子的徽章數量:', badges.length);
-                
-                for (var j = 0; j < badges.length; j++) {
-                    tile.removeChild(badges[j]);
-                    console.log('移除了第', i, '個格子的徽章');
+                tiles[i].classList.remove('visited');
+                var badge = tiles[i].querySelector('.visited-badge');
+                if (badge) {
+                    tiles[i].removeChild(badge);
                 }
             }
             
-            // 強制更新所有顯示
-            console.log('=== 開始更新統計 ===');
-            
-            // 手動更新每個元素
-            var visitedCountElement = document.getElementById('visitedCount');
-            var totalRewardElement = document.getElementById('totalRewardDisplay');
-            var bonusRewardElement = document.getElementById('bonusRewardCard');
-            var progressRing = document.getElementById('progressRing');
-            var progressText = document.getElementById('progressText');
-            var gameLevelElement = document.getElementById('gameLevel');
-            
-            console.log('找到的元素:');
-            console.log('visitedCount:', !!visitedCountElement);
-            console.log('totalReward:', !!totalRewardElement);
-            console.log('bonusReward:', !!bonusRewardElement);
-            console.log('progressRing:', !!progressRing);
-            console.log('progressText:', !!progressText);
-            console.log('gameLevel:', !!gameLevelElement);
-            
-            // 直接設定值
-            if (visitedCountElement) {
-                visitedCountElement.textContent = '0 / 30';
-                console.log('更新踩點數量為: 0 / 30');
-            }
-            
-            if (totalRewardElement) {
-                totalRewardElement.textContent = '3%';
-                console.log('更新總回饋率為: 3%');
-            }
-            
-            if (bonusRewardElement) {
-                bonusRewardElement.textContent = '0%';
-                console.log('更新踩點任務加碼為: 0%');
-            }
-            
-            if (progressRing) {
-                progressRing.style.setProperty('--progress', '0deg');
-                console.log('更新進度環為: 0deg');
-            }
-            
-            if (progressText) {
-                progressText.textContent = '0%';
-                console.log('更新進度文字為: 0%');
-            }
-            
-            if (gameLevelElement) {
-                gameLevelElement.textContent = '新手探索者';
-                console.log('更新遊戲等級為: 新手探索者');
-            }
-            
-            // 保存進度
+            // 更新顯示
+            updateStats();
             saveProgress();
-            console.log('保存進度完成');
-            
-            // 延遲顯示成就
-            setTimeout(function() {
-                showAchievement('進度已重置', '所有踩點記錄已清空，重新開始挑戰！', '🔄');
-                console.log('顯示重置成就');
-            }, 100);
-            
-            console.log('=== 重置功能執行完畢 ===');
+            showAchievement('進度已重置', '所有踩點記錄已清空，重新開始挑戰！', '🔄');
+            console.log('重置完成');
         }
 
         // 全域變數
@@ -1085,6 +935,7 @@
 
         function checkMilestoneAchievements() {
             var visitedCount = visitedStores.size;
+            console.log('檢查里程碑成就，踩點數量:', visitedCount);
             
             if (visitedCount === 1) {
                 showAchievement('踩點首航！', '歡迎加入uniopen踩點大富翁世界！', '🎊');
@@ -1116,7 +967,6 @@
                 if (window.history && window.history.replaceState) {
                     window.history.replaceState({}, '', window.location.pathname + '?data=' + encoded);
                 }
-                console.log('進度保存成功');
             } catch (e) {
                 console.log('Save progress failed:', e);
             }
@@ -1130,7 +980,6 @@
                     var progressData = JSON.parse(atob(encoded));
                     visitedStores = new Set(progressData);
                     
-                    console.log('載入進度:', progressData);
                     for (var i = 0; i < progressData.length; i++) {
                         addVisitedBadge(progressData[i]);
                     }
