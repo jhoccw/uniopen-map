@@ -549,7 +549,42 @@
                 padding: 10px 16px;
             }
         }
-    </style>
+    
+/* === Combined fixes (overflow & unified widths/padding) === */
+
+/* Keep cards inside the white container */
+.game-board { overflow: hidden; }
+
+/* Prevent grid from exceeding container and allow proper box sizing */
+.monopoly-board { max-width: 100%; box-sizing: border-box; }
+
+/* Prevent long names from pushing tiles wider than grid cells */
+.store-tile { min-width: 0; }
+.store-name { overflow-wrap: anywhere; word-break: break-word; max-width: 100%; }
+
+/* Disable hover transform on touch devices to avoid overflow during zoom */
+@media (hover: none) {
+  .store-tile { transform: none !important; }
+}
+
+/* Make game-board and stats-panel match the width & horizontal padding of the bottom disclaimer area */
+.game-board,
+.stats-panel {
+  /* Align with .footer-content (max-width: 800px) */
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  /* Match footer's horizontal padding (30px 20px) => use 20px on the sides */
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+/* Optional: keep comfortable vertical paddings similar to originals */
+.game-board { padding-top: 40px; padding-bottom: 40px; }
+.stats-panel { padding-top: 30px; padding-bottom: 30px; }
+
+</style>
 </head>
 <body>
     <div class="container">
