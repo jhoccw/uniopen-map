@@ -224,7 +224,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(#9b7bff 0deg, #9b7bff var(--progress, 0deg), #f0f0f0 var(--progress, 0deg), #f0f0f0 360deg);
+            background-image: conic-gradient(#9b7bff 0deg var(--progress, 0deg),#f0f0f0 var(--progress, 0deg) 360deg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -492,7 +492,7 @@
 
         @media (max-width: 768px) {
             .monopoly-board {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
             }
             
@@ -863,9 +863,10 @@
             var progressRing = document.getElementById('progressRing');
             var progressText = document.getElementById('progressText');
             if (progressRing && progressText) {
-                var progressDegrees = (completionPercentage / 100) * 360;
+                var uiPct = Math.round(Math.min(visitedCount, 5) / 5 * 100);
+                var progressDegrees = (uiPct / 100) * 360;
                 progressRing.style.setProperty('--progress', progressDegrees + 'deg');
-                progressText.textContent = completionPercentage + '%';
+                progressText.textContent = uiPct + '%';
             }
 
             // 更新遊戲等級
